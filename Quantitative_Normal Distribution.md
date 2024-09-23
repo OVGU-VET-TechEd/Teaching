@@ -1,4 +1,4 @@
-# Normal Distribution and p-Value (1)
+# Normal Distribution and p-Value (2)
 
 ## Introduction to Normal Distribution
 
