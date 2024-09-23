@@ -1,0 +1,47 @@
+# Normal Distribution and p-Value with Python
+
+## Introduction to Normal Distribution
+
+The normal distribution, also known as the Gaussian distribution, is a probability distribution that is symmetric around the mean. In this type of distribution, most of the observations cluster around the central peak and the probabilities for values taper off equally on both sides.
+
+---
+
+## Interactive Python Exploration of Normal Distribution
+
+You can adjust the mean, standard deviation, and skewness of a normal distribution below. The plot will update accordingly using Python’s `numpy` and `matplotlib` libraries.
+
+### Adjust the parameters:
+
+@slider("Mean", 0, 100, 50)
+var mean = 50
+
+@slider("Standard Deviation", 1, 30, 10)
+var stddev = 10
+
+@slider("Skewness", -3, 3, 0)
+var skew = 0
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate normal distribution data
+x = np.linspace(mean - 4 * stddev, mean + 4 * stddev, 1000)
+y = (1 / (stddev * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mean) / stddev) ** 2)
+
+# Apply skewness
+if skew != 0:
+    if skew < 0:
+        y *= np.exp(skew * (x - mean))
+    else:
+        y *= np.exp(-skew * (x - mean))
+
+# Create the plot
+plt.figure(figsize=(8,4))
+plt.plot(x, y, label=f'Normal Distribution (mean={mean}, stddev={stddev}, skew={skew})')
+plt.fill_between(x, y, alpha=0.2)
+plt.title('Normal Distribution')
+plt.xlabel('Value')
+plt.ylabel('Probability Density')
+plt.legend()
+plt.show()
+@Pyodide.eval
