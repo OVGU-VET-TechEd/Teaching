@@ -43,36 +43,44 @@ var stddev = 10
 var skew = 0
 
 ### Visualizing the Normal Distribution
-
 @js
+@input(mean, -10, 10, 0.1, 0)
+@input(stddev, 0.1, 10, 0.1, 1)
+@input(skew, -5, 5, 0.1, 0)
+
 function gaussian(mean, stddev, skew, count = 100) {
-    let values = [];
-    let start = mean - 4 * stddev;
-    let end = mean + 4 * stddev;
-    let step = (end - start) / count;
+  let values = [];
+  let start = mean - 4 * stddev;
+  let end = mean + 4 * stddev;
+  let step = (end - start) / count;
 
-    for (let i = 0; i < count; i++) {
-        let x = start + step * i;
-        let y = (1 / (stddev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stddev, 2));
-        
-        // Apply skewness to the distribution
-        if (skew < 0) {
-            y *= Math.exp(skew * (x - mean));
-        } else {
-            y *= Math.exp(-skew * (x - mean));
-        }
-
-        values.push({x: x, y: y});
+  for (let i = 0; i < count; i++) {
+    let x = start + step * i;
+    let y = (1 / (stddev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stddev, 2));
+    
+    // Apply skewness to the distribution
+    if (skew < 0) {
+      y *= Math.exp(skew * (x - mean));
+    } else {
+      y *= Math.exp(-skew * (x - mean));
     }
-    return values;
+
+    values.push({x: x, y: y});
+  }
+  return values;
 }
 
 let values = gaussian(mean, stddev, skew);
 
-show.scatter(values.map(v => v.x), values.map(v => v.y), {
-  xLabel: "Value",
-  yLabel: "Probability Density",
-  title: `Normal Distribution with Mean=${mean}, Stddev=${stddev}, Skew=${skew}`
+plotly.plot("gaussian-plot", [{
+  x: values.map(v => v.x),
+  y: values.map(v => v.y),
+  type: 'scatter',
+  mode: 'lines'
+}], {
+  title: `Normal Distribution with Mean=${mean}, Stddev=${stddev}, Skew=${skew}`,
+  xaxis: {title: "Value"},
+  yaxis: {title: "Probability Density"}
 });
 
 ---
