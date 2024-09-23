@@ -10,9 +10,6 @@
 @input(skew, -5, 5, 0.1, 0)
 
 <script>
-@input(mean, -10, 10, 0.1, 0)
-@input(stddev, 0.1, 10, 0.1, 1)
-@input(skew, -5, 5, 0.1, 0)
 
 function updatePlot(mean, stddev, skew) {
   try {
@@ -62,10 +59,12 @@ function updatePlot(mean, stddev, skew) {
   }
 }
 
+</script>
+
 // Initial plot
 updatePlot(mean, stddev, skew);
 
 // Update plot when inputs change
 @onInput(mean, stddev, skew)
 updatePlot(mean, stddev, skew);
-</script>
+
