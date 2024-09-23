@@ -1,0 +1,77 @@
+# Normal Distribution and p-Value with Python
+
+## Introduction to Normal Distribution
+
+The normal distribution, also known as the Gaussian distribution, is a probability distribution that is symmetric around the mean. In this type of distribution, most of the observations cluster around the central peak and the probabilities for values taper off equally on both sides.
+
+![Normal Distribution](https://upload.wikimedia.org/wikipedia/commons/7/74/Normal_Distribution_PDF.svg)
+
+---
+
+### Key Properties of a Normal Distribution:
+
+1. **Symmetry**: The distribution is symmetric around the mean.
+2. **Mean, Median, Mode**: In a perfectly normal distribution, the mean, median, and mode are identical.
+3. **Bell-shaped curve**: The distribution takes on a bell-shaped curve.
+4. **68-95-99.7 Rule**: About 68% of the data falls within one standard deviation of the mean, 95% within two, and 99.7% within three.
+
+---
+
+## p-Value and Its Connection to the Normal Distribution
+
+The **p-value** is a measure used in hypothesis testing to quantify the evidence against a null hypothesis. In the context of the normal distribution, p-values help us determine how extreme a given data point is within a distribution.
+
+For a given test statistic, the p-value tells us the probability of observing a test statistic as extreme as, or more extreme than, the one observed under the assumption that the null hypothesis is true.
+
+---
+
+### The Role of the p-Value:
+- **Low p-value (< 0.05)**: Suggests that the observed data is unlikely under the null hypothesis, leading to its rejection.
+- **High p-value (> 0.05)**: Suggests that the observed data is consistent with the null hypothesis.
+
+---
+
+## Interactive Python Exploration with Distributions
+
+You can adjust the mean, standard deviation, and skewness of a normal distribution below, and the chart will update accordingly using Python's `numpy` and `matplotlib` libraries.
+
+<!--
+import:  https://github.com/LiaTemplates/Pyodide
+@onload: window.py_packages = ["matplotlib", "numpy"]
+-->
+
+### Adjust the parameters for the normal distribution:
+
+@slider("Mean", 0, 100, 50)
+var mean = 50
+
+@slider("Standard Deviation", 1, 30, 10)
+var stddev = 10
+
+@slider("Skewness", -3, 3, 0)
+var skew = 0
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate normal distribution data
+x = np.linspace(mean - 4 * stddev, mean + 4 * stddev, 1000)
+y = (1 / (stddev * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mean) / stddev) ** 2)
+
+# Apply skewness
+if skew != 0:
+    if skew < 0:
+        y *= np.exp(skew * (x - mean))
+    else:
+        y *= np.exp(-skew * (x - mean))
+
+# Create the plot
+plt.figure(figsize=(8,4))
+plt.plot(x, y, label=f'Normal Distribution (mean={mean}, stddev={stddev}, skew={skew})')
+plt.fill_between(x, y, alpha=0.2)
+plt.title('Normal Distribution')
+plt.xlabel('Value')
+plt.ylabel('Probability Density')
+plt.legend()
+plt.show()
