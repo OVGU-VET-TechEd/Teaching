@@ -1,3 +1,4 @@
+##### `visualization == Sinus wave`
 
 $a =$ <script modify="false" input="range" step="1"   min="-1"  max="6"  value="2" output="a">@input</script>,
 $b =$ <script modify="false" input="range" step="0.1" min="-10" max="10" value="0" output="b">@input</script>,
