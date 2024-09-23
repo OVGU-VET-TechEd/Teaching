@@ -44,8 +44,7 @@ var skew = 0
 
 ### Visualizing the Normal Distribution
 
-```javascript
-// Function to create a normal distribution with skewness adjustment
+@js
 function gaussian(mean, stddev, skew, count = 100) {
     let values = [];
     let start = mean - 4 * stddev;
@@ -63,47 +62,56 @@ function gaussian(mean, stddev, skew, count = 100) {
             y *= Math.exp(-skew * (x - mean));
         }
 
-        values.push([x, y]);
+        values.push({x: x, y: y});
     }
     return values;
 }
 
-// Create chart
-let chart = {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [{
-            label: 'Probability Density',
-            data: [],
-            fill: true,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            tension: 0.1
-        }]
-    },
-    options: {
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                title: {
-                    display: true,
-                    text: 'Value'
-                }
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Probability Density'
-                }
-            }
-        }
-    }
-};
-
-// Populate chart data
 let values = gaussian(mean, stddev, skew);
-chart.data.labels = values.map(v => v[0]);
-chart.data.datasets[0].data = values.map(v => v[1]);
 
-showChart(chart);
+show.scatter(values.map(v => v.x), values.map(v => v.y), {
+  xLabel: "Value",
+  yLabel: "Probability Density",
+  title: `Normal Distribution with Mean=${mean}, Stddev=${stddev}, Skew=${skew}`
+});
+
+---
+
+## Hypothesis Testing Example
+
+Let’s take a simple hypothesis testing scenario:
+
+- **Null Hypothesis (H0)**: The population mean is 50.
+- **Alternative Hypothesis (H1)**: The population mean is different from 50.
+
+We will calculate the p-value for a sample mean of **55** with a sample size of **30** and a population standard deviation of **10**.
+
+@slider("Sample Mean", 45, 60, 55)
+var sample_mean = 55
+
+@slider("Sample Size", 10, 100, 30)
+var sample_size = 30
+
+@slider("Population Std Dev", 5, 15, 10)
+var population_std = 10
+
+### Calculating the Z-Score and p-Value
+
+@js
+function zScoreAndPValue(sample_mean, population_mean, population_std, sample_size) {
+    let z_score = (sample_mean - population_mean) / (population_std / Math.sqrt(sample_size));
+    let p_value = 2 * (1 - jStat.normal.cdf(Math.abs(z_score), 0, 1));
+    return { z_score, p_value };
+}
+
+let results = zScoreAndPValue(sample_mean, 50, population_std, sample_size);
+
+`Z-score: ${results.z_score} | P-value: ${results.p_value}`;
+
+---
+
+### Conclusion
+
+When interpreting the p-value:
+- A **small p-value** (typically ≤ 0.05) indicates strong evidence against the null hypothesis, so you reject the null hypothesis.
+- A **large p-value** (> 0.05) suggests weak evidence against the null hypothesis, so you fail to reject the null hypothesis.
