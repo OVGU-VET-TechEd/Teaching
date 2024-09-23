@@ -1,4 +1,3 @@
-#The following code generates an interactive chart for the normal distribution, where the user can adjust the **mean** (μ) and **standard deviation** (σ).
 
 $mu =$ <script modify="false" input="range" step="0.1" min="-10" max="10" value="0" output="mu">@input</script>,
 $sigma =$ <script modify="false" input="range" step="0.1" min="0.1" max="5" value="1" output="sigma">@input</script>
