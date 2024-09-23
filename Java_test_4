@@ -1,1 +1,70 @@
-https://raw.githubusercontent.com/OVGU-VET-TechEd/Teaching/refs/heads/main/Java_test_3
+# Gaussian Distribution Interactive Plot
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div id="error-message" style="color: red;"></div>
+<div id="gaussian-plot"></div>
+
+@input(mean, -10, 10, 0.1, 0)
+@input(stddev, 0.1, 10, 0.1, 1)
+@input(skew, -5, 5, 0.1, 0)
+
+<script>
+
+function updatePlot(mean, stddev, skew) {
+  try {
+    function gaussian(mean, stddev, skew, count = 100) {
+      let values = [];
+      let start = mean - 4 * stddev;
+      let end = mean + 4 * stddev;
+      let step = (end - start) / count;
+
+      for (let i = 0; i < count; i++) {
+        let x = start + step * i;
+        let y = (1 / (stddev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stddev, 2));
+        
+        // Apply skewness to the distribution
+        if (skew < 0) {
+          y *= Math.exp(skew * (x - mean));
+        } else {
+          y *= Math.exp(-skew * (x - mean));
+        }
+
+        values.push({x: x, y: y});
+      }
+      return values;
+    }
+
+    let values = gaussian(mean, stddev, skew);
+
+    if (typeof Plotly === 'undefined') {
+      throw new Error("Plotly is not defined. Make sure it's properly loaded.");
+    }
+
+    Plotly.newPlot("gaussian-plot", [{
+      x: values.map(v => v.x),
+      y: values.map(v => v.y),
+      type: 'scatter',
+      mode: 'lines'
+    }], {
+      title: `Normal Distribution (Mean: ${mean.toFixed(2)}, StdDev: ${stddev.toFixed(2)}, Skew: ${skew.toFixed(2)})`,
+      xaxis: {title: "Value"},
+      yaxis: {title: "Probability Density"}
+    });
+
+    console.log("Plot updated successfully");
+  } catch (error) {
+    console.error("Error updating plot:", error);
+    document.getElementById("error-message").textContent = "Error: " + error.message;
+  }
+}
+
+</script>
+
+// Initial plot
+updatePlot(mean, stddev, skew);
+
+// Update plot when inputs change
+@onInput(mean, stddev, skew)
+updatePlot(mean, stddev, skew);
+
